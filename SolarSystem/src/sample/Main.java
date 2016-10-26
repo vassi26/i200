@@ -1,49 +1,95 @@
 package sample;
 
+import javafx.animation.Interpolator;
+import javafx.animation.PathTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Main extends Application {
+    public Sphere sun;
+    public Sphere earth;
+    public Sphere moon;
+    @FXML
+    StackPane stackPaneOne;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Scene scene = new Scene(new Group());
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("solarSystem.fxml"));
+        loader.setController(this);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Solar System");
-        DropShadow shadow = new DropShadow();
-        VBox vbox = new VBox();
-        vbox.setLayoutX(900);
-        vbox.setLayoutY(575);
-        HBox hbox1 = new HBox();
-        Button actionButton = new Button("Start/Stop");
+        primaryStage.show();
+
+        sun = new Sphere(30);
+        earth = new Sphere(10);
+        moon = new Sphere(2);
+
+        Ellipse orbitEarth = new Ellipse();
+        //TODO: change orbit radius to be more realistic
+        orbitEarth.setRadiusX(sun.getBoundsInLocal().getWidth() + 90 );
+        orbitEarth.setRadiusY(sun.getBoundsInLocal().getHeight() + 90 );
+
+        PathTransition transitionEarth = new PathTransition();
+        transitionEarth.setPath(orbitEarth);
+        transitionEarth.setNode(earth);
+        transitionEarth.setInterpolator(Interpolator.LINEAR);
+        transitionEarth.setDuration(Duration.seconds(10.000017421));
+        transitionEarth.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+        transitionEarth.setCycleCount(Timeline.INDEFINITE);
+
+        transitionEarth.play();
+
+        Ellipse orbitMoon = new Ellipse();
+        //TODO: change orbit radius to be more realistic
+        orbitMoon.setRadiusX(earth.getBoundsInLocal().getWidth() + 20);
+        orbitMoon.setRadiusY(earth.getBoundsInLocal().getHeight() + 20);
+
+        PathTransition transitionMoon = new PathTransition();
+        transitionMoon.setPath(orbitMoon);
+        transitionMoon.setNode(moon);
+        transitionMoon.setInterpolator(Interpolator.LINEAR);
+        transitionMoon.setDuration(Duration.seconds(1.000017421));
+        transitionMoon.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+        transitionMoon.setCycleCount(Timeline.INDEFINITE);
+        transitionMoon.play();
+
+        orbitMoon.setVisible(false);
+        orbitEarth.setVisible(false);
+
+        StackPane moonPane = new StackPane();
+        moonPane.translateXProperty().bind(earth.translateXProperty());
+        moonPane.translateYProperty().bind(earth.translateYProperty());
+        moonPane.setMaxSize(100, 100);
+        stackPaneOne.setStyle("-fx-background-color: BLACK;");
+
 //        actionButton.setOnAction(new EventHandler<ActionEvent>() {
 //            @Override public void handle(ActionEvent e) {
 //
 //            }
 //        });
-        actionButton.addEventHandler(MouseEvent.MOUSE_ENTERED,
-                e -> actionButton.setEffect(shadow));
 
-        actionButton.addEventHandler(MouseEvent.MOUSE_EXITED,
-                e -> actionButton.setEffect(null));
-				
-        hbox1.setSpacing(10);
-        hbox1.setAlignment(Pos.BOTTOM_CENTER);
-        hbox1.getChildren().add(actionButton);
-        vbox.getChildren().add(hbox1);
-        ((Group)scene.getRoot()).getChildren().add(vbox);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+//        actionButton.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> actionButton.setEffect(shadow));
+//        actionButton.addEventHandler(MouseEvent.MOUSE_EXITED, e -> actionButton.setEffect(null));
+
+        stackPaneOne.getChildren().add(sun);
+        moonPane.getChildren().add(moon);
+        stackPaneOne.getChildren().add(moonPane);
+        stackPaneOne.getChildren().add(orbitEarth);
+        stackPaneOne.getChildren().add(earth);
+        stackPaneOne.setBorder(new Border(new BorderStroke(Color.BLACK,
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		
     }
 
