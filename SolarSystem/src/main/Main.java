@@ -1,4 +1,4 @@
-package sample;
+package main;
 
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
@@ -24,16 +25,22 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("solarSystem.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../resources/solarSystem.fxml"));
         loader.setController(this);
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Solar System");
-        primaryStage.show();
+
+        final PhongMaterial redMaterial = new PhongMaterial();
+        final PhongMaterial blueMaterial = new PhongMaterial();
+        redMaterial.setDiffuseColor(Color.YELLOW);
+        blueMaterial.setDiffuseColor(Color.ALICEBLUE);
 
         sun = new Sphere(30);
+        sun.setMaterial(redMaterial);
         earth = new Sphere(10);
+        earth.setMaterial(blueMaterial);
         moon = new Sphere(2);
 
         Ellipse orbitEarth = new Ellipse();
@@ -48,7 +55,6 @@ public class Main extends Application {
         transitionEarth.setDuration(Duration.seconds(10.000017421));
         transitionEarth.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
         transitionEarth.setCycleCount(Timeline.INDEFINITE);
-
         transitionEarth.play();
 
         Ellipse orbitMoon = new Ellipse();
@@ -72,17 +78,13 @@ public class Main extends Application {
         moonPane.translateXProperty().bind(earth.translateXProperty());
         moonPane.translateYProperty().bind(earth.translateYProperty());
         moonPane.setMaxSize(100, 100);
-        stackPaneOne.setStyle("-fx-background-color: BLACK;");
 
-//        actionButton.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override public void handle(ActionEvent e) {
-//
-//            }
-//        });
 
+//        actionButton.setOnAction(MouseEvent.MOUSE_ENTERED, e -> actionButton.setEffect(shadow));
 //        actionButton.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> actionButton.setEffect(shadow));
 //        actionButton.addEventHandler(MouseEvent.MOUSE_EXITED, e -> actionButton.setEffect(null));
 
+        stackPaneOne.setStyle("-fx-background-color: BLACK;");
         stackPaneOne.getChildren().add(sun);
         moonPane.getChildren().add(moon);
         stackPaneOne.getChildren().add(moonPane);
@@ -90,6 +92,7 @@ public class Main extends Application {
         stackPaneOne.getChildren().add(earth);
         stackPaneOne.setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        primaryStage.show();
 		
     }
 
