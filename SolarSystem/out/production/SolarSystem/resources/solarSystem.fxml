@@ -12,7 +12,7 @@
   <children>
     <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="522.0000999999975" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
-        <StackPane fx:id="stackPaneOne" layoutX="22.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="480.0" prefWidth="480.0" />
+        <StackPane fx:id="space" layoutX="22.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="480.0" prefWidth="480.0" />
         <Button layoutX="400.0" layoutY="518.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="102.0" text="Start / Stop" />
         <Slider layoutX="22.0" layoutY="529.0" prefWidth="188.0" />
         <ToggleButton disable="false" ellipsisString="" layoutX="266.0" layoutY="518.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" selected="false" styleClass="" text="Forward" textOverrun="ELLIPSIS" underline="false" visible="true" wrapText="false" />
