@@ -3,26 +3,31 @@
   <planet>
     <name>The Sun</name>
     <radius>30</radius>
+    <orbit>5</orbit>
     <color>YELLOW</color>
   </planet>
   <planet>
     <name>Mercury</name>
     <radius>2</radius>
+    <orbit>50</orbit>
     <color>GREY</color>
   </planet>
   <planet>
     <name>Venus</name>
     <radius>8</radius>
+    <orbit>75</orbit>
     <color>YELLOW</color>
   </planet>
   <planet>
     <name>Earth</name>
-    <diameter>10</diameter>
+    <radius>10</radius>
+    <orbit>100</orbit>
     <color>BLUE</color>
   </planet>
   <planet>
     <name>Mars</name>
     <radius>5</radius>
+    <orbit>125</orbit>
     <color>RED</color>
   </planet>
 </planets>

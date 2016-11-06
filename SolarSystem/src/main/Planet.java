@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType( propOrder = { "name", "radius", "color" } )
+@XmlType( propOrder = { "name", "radius", "orbit", "color" } )
 @XmlRootElement( name = "planet" )
 public class Planet {
 
@@ -36,6 +36,18 @@ public class Planet {
         this.radius = radius;
     }
 
+    double orbit;
+    public double getOrbit()
+
+    {
+        return orbit;
+    }
+    @XmlElement( name = "orbit" )
+    public void setOrbit(double orbit){
+
+        this.orbit = orbit;
+    }
+
     String color;
     public String getColor()
 
@@ -48,10 +60,26 @@ public class Planet {
         this.color = color;
     }
 
+    Coordinates coordinates = new Coordinates(0,radius);
+
+    Node sphere = createView();
     public Node createView() {
 
         Sphere sphere = new Sphere(radius);
+        sphere.setTranslateY(0);
+        sphere.setTranslateX(orbit);
         return sphere;
+    }
+
+    public void updateLocation() {
+        double x = this.coordinates.getX();
+        double y = this.coordinates.getY();
+
+        this.coordinates.setX(100);
+        this.coordinates.setY(-200);
+
+        sphere.relocate(this.coordinates.getX(),this.coordinates.getY());
+
     }
 
 }
