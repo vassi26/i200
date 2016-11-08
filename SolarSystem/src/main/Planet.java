@@ -7,7 +7,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType( propOrder = { "name", "radius", "orbit", "color" } )
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
+
+@XmlType( propOrder = { "name", "radius", "orbit", "omega", "color" } )
 @XmlRootElement( name = "planet" )
 public class Planet {
 
@@ -48,6 +52,18 @@ public class Planet {
         this.orbit = orbit;
     }
 
+    double omega;
+    public double getOmega()
+
+    {
+        return omega;
+    }
+    @XmlElement( name = "omega" )
+    public void setOmega(double omega){
+
+        this.omega = omega;
+    }
+
     String color;
     public String getColor()
 
@@ -60,25 +76,22 @@ public class Planet {
         this.color = color;
     }
 
-    Coordinates coordinates = new Coordinates(0,radius);
+    double alpha = omega;
+
+    Coordinates coordinates = new Coordinates(0,orbit,orbit);
 
     Node sphere = createView();
     public Node createView() {
 
         Sphere sphere = new Sphere(radius);
-        sphere.setTranslateY(0);
-        sphere.setTranslateX(orbit);
         return sphere;
     }
 
     public void updateLocation() {
-        double x = this.coordinates.getX();
-        double y = this.coordinates.getY();
 
-        this.coordinates.setX(100);
-        this.coordinates.setY(-200);
-
-        sphere.relocate(this.coordinates.getX(),this.coordinates.getY());
+        alpha += omega;
+        coordinates.setX(orbit * sin(toRadians(alpha)));
+        coordinates.setY(orbit * cos(toRadians(alpha)));
 
     }
 

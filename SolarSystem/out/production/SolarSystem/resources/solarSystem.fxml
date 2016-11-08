@@ -14,7 +14,7 @@
       <children>
         <StackPane fx:id="space" layoutX="22.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="480.0" prefWidth="480.0" />
         <ToggleButton fx:id="startButton" disable="false" ellipsisString="" layoutX="400.0" layoutY="518.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" selected="false" styleClass="" text="Start" textOverrun="ELLIPSIS" underline="false" visible="true" wrapText="false" />
-        <Slider layoutX="22.0" layoutY="529.0" prefWidth="188.0" />
+        <Slider fx:id="slider" layoutX="22.0" layoutY="529.0" prefWidth="188.0" />
         <ToggleButton fx:id="directionButton" disable="false" ellipsisString="" layoutX="266.0" layoutY="518.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" selected="false" styleClass="" text="Forward" textOverrun="ELLIPSIS" underline="false" visible="true" wrapText="false" />
         <Label layoutX="22.0" layoutY="545.0" text="Speed" />
         <Label layoutX="22.0" layoutY="510.0" text="Actual" />

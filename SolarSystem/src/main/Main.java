@@ -1,9 +1,13 @@
 package main;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -18,6 +22,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main extends Application {
@@ -33,10 +39,9 @@ public class Main extends Application {
 
     Planets planets;
 
-    TranslateTransition transition1;
-    TranslateTransition transition2;
-    TranslateTransition transition3;
-    TranslateTransition transition4;
+    Duration duration = new Duration(100.0);
+
+    List<TranslateTransition> transactions = new ArrayList<TranslateTransition>();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -50,63 +55,48 @@ public class Main extends Application {
 
         loadPlanets();
 
+/*        for(Planet p : planets.getPlanets()){
+            p.updateLocation();
+        }*/
+
         space.getChildren().addAll(planets.getPlanets().stream().map(Planet::createView).collect(Collectors.toList()));
         space.setStyle("-fx-background-color: BLACK;");
         space.setBorder(new Border(new BorderStroke(Color.ORANGE,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        transition1 = new TranslateTransition();
-        transition1.setToX(50);
-        transition1.setToY(-50);
-        transition1.setDuration(Duration.seconds(5));
-        transition1.setNode(space.getChildren().get(1));
+        Timeline time = new Timeline();
+        time.setCycleCount(Animation.INDEFINITE);
+        KeyFrame motion = new KeyFrame(duration,
+                event -> {
+                    for(int i = space.getChildren().size(); i > 0 ;i--){
+                        Node planet = space.getChildren().get(i-1);
+                        TranslateTransition t = new TranslateTransition(duration, planet);
+                        t.setToX(planets.getPlanets().get(i-1).coordinates.getX());
+                        t.setToY(planets.getPlanets().get(i-1).coordinates.getY());
+                        transactions.add(t);
+                        planets.getPlanets().get(i-1).updateLocation();
+                    }
+                    transactions.forEach(Animation::play);
+                    /*for(TranslateTransition t : transactions){
+                        t.play();
+                    }*/
+                });
 
-        transition2 = new TranslateTransition();
-        transition2.setToX(-75);
-        transition2.setToY(-220);
-        transition2.setDuration(Duration.seconds(2));
-        transition2.setNode(space.getChildren().get(2));
-
-        transition3 = new TranslateTransition();
-        transition3.setToX(40);
-        transition3.setToY(130);
-        transition3.setDuration(Duration.seconds(4));
-        transition3.setNode(space.getChildren().get(3));
-
-        transition4 = new TranslateTransition();
-        transition4.setToX(-180);
-        transition4.setToY(150);
-        transition4.setDuration(Duration.seconds(3));
-        transition4.setNode(space.getChildren().get(4));
+        time.getKeyFrames().add(motion);
 
         startButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 e -> {
                     if(startButton.isSelected() == true) {
-                        startMotion();
+                        time.play();
                         startButton.setText("Pause");
                     } else {
-                        pauseMotion();
+                        time.stop();
                         startButton.setText("Resume");
                     }
                 });
 
-
         primaryStage.show();
 
-    }
-
-    public void startMotion(){
-                transition1.play();
-                transition2.play();
-                transition3.play();
-                transition4.play();
-    }
-
-    public void pauseMotion(){
-                transition1.pause();
-                transition2.pause();
-                transition3.pause();
-                transition4.pause();
     }
 
 
