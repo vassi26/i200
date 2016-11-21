@@ -5,15 +5,20 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -26,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static oracle.jrockit.jfr.events.Bits.doubleValue;
+
 public class Main extends Application {
 
     @FXML
@@ -36,6 +43,9 @@ public class Main extends Application {
 
     @FXML
     ToggleButton directionButton;
+
+    @FXML
+    Slider slider;
 
     Planets planets;
 
@@ -55,14 +65,15 @@ public class Main extends Application {
 
         loadPlanets();
 
-/*        for(Planet p : planets.getPlanets()){
-            p.updateLocation();
-        }*/
-
         space.getChildren().addAll(planets.getPlanets().stream().map(Planet::createView).collect(Collectors.toList()));
-        space.setStyle("-fx-background-color: BLACK;");
-        space.setBorder(new Border(new BorderStroke(Color.ORANGE,
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        space.setStyle("-fx-background-image: url(/resources/space.jpg);");
+        space.setBorder(new Border(new BorderStroke(Color.PURPLE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+
+        /*http://stackoverflow.com/questions/24347658/getting-a-mp3-file-to-play-using-javafx | http://soundimage.org/sci-fi/*/
+        String path = Main.class.getResource("/resources/Light-Years.mp3").toString();
+        Media media = new Media(path);
+        MediaPlayer mp = new MediaPlayer(media);
 
         Timeline time = new Timeline();
         time.setCycleCount(Animation.INDEFINITE);
@@ -77,9 +88,6 @@ public class Main extends Application {
                         planets.getPlanets().get(i-1).updateLocation();
                     }
                     transactions.forEach(Animation::play);
-                    /*for(TranslateTransition t : transactions){
-                        t.play();
-                    }*/
                 });
 
         time.getKeyFrames().add(motion);
@@ -88,14 +96,50 @@ public class Main extends Application {
                 e -> {
                     if(startButton.isSelected() == true) {
                         time.play();
+                        mp.play();
                         startButton.setText("Pause");
                     } else {
                         time.stop();
+                        mp.pause();
                         startButton.setText("Resume");
                     }
                 });
 
+        directionButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> {
+                    if(directionButton.isSelected() == true) {
+                        for(Planet p : planets.getPlanets()){
+                            p.direction = -1;
+                        }
+                        directionButton.setText("Reverse");
+                    } else {
+                        for(Planet p : planets.getPlanets()){
+                            p.direction = 1;
+                        }
+                        directionButton.setText("Forward");
+                    }
+                });
+        slider.addEventHandler(MouseEvent.MOUSE_RELEASED,
+                e-> {
+
+                });
+
         primaryStage.show();
+                /*https://blog.idrsolutions.com/2012/11/adding-a-window-resize-listener-to-javafx-scene/*/
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                double change = space.getWidth() + doubleValue(newSceneWidth) - doubleValue(oldSceneWidth);
+                space.prefWidthProperty().setValue(change);
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                double spaceChange = space.getHeight() + doubleValue(newSceneHeight) - doubleValue(oldSceneHeight);
+                double startBtnChange = 518 + doubleValue(newSceneHeight) - doubleValue(oldSceneHeight);
+                space.prefHeightProperty().setValue(spaceChange);
+                //startButton.setLayoutY(startBtnChange);
+            }
+        });
 
     }
 

@@ -5,11 +5,9 @@
  
 # Java:
 build/
+SolarSystem/out/
 *.class
- 
-# Python:
-*.pyc
- 
-# C/C++:
-*.so
-*.o
+
+# idea
+SolarSystem/.idea/
+*.iml
