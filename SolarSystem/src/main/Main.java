@@ -1,9 +1,6 @@
 package main;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -47,9 +45,14 @@ public class Main extends Application {
     @FXML
     Slider slider;
 
+    @FXML
+    Label speed;
+
     Planets planets;
 
-    Duration duration = new Duration(100.0);
+    Duration duration = new Duration(300.0);
+
+    public Double rate;
 
     List<TranslateTransition> transactions = new ArrayList<TranslateTransition>();
 
@@ -69,7 +72,6 @@ public class Main extends Application {
         space.setStyle("-fx-background-image: url(/resources/space.jpg);");
         space.setBorder(new Border(new BorderStroke(Color.PURPLE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-
         /*http://stackoverflow.com/questions/24347658/getting-a-mp3-file-to-play-using-javafx | http://soundimage.org/sci-fi/*/
         String path = Main.class.getResource("/resources/Light-Years.mp3").toString();
         Media media = new Media(path);
@@ -84,6 +86,8 @@ public class Main extends Application {
                         TranslateTransition t = new TranslateTransition(duration, planet);
                         t.setToX(planets.getPlanets().get(i-1).coordinates.getX());
                         t.setToY(planets.getPlanets().get(i-1).coordinates.getY());
+                        //helps make transitions smooth
+                        t.setInterpolator(Interpolator.LINEAR);
                         transactions.add(t);
                         planets.getPlanets().get(i-1).updateLocation();
                     }
@@ -111,21 +115,25 @@ public class Main extends Application {
                         for(Planet p : planets.getPlanets()){
                             p.direction = -1;
                         }
-                        directionButton.setText("Reverse");
+                        directionButton.setText("Forward");
                     } else {
                         for(Planet p : planets.getPlanets()){
                             p.direction = 1;
                         }
-                        directionButton.setText("Forward");
+                        directionButton.setText("Reverse");
                     }
                 });
-        slider.addEventHandler(MouseEvent.MOUSE_RELEASED,
-                e-> {
+        //http://stackoverflow.com/questions/22780369/make-a-label-update-while-dragging-a-slider
+        slider.valueProperty().addListener((arg0, arg1, arg2) -> {
 
-                });
+            rate = slider.getValue();
+            speed.textProperty().setValue(String.valueOf(Math.round( rate * 100.0 ) / 100.0));
+            for(Planet p : planets.getPlanets()){p.speedRate = rate;}
+
+        });
 
         primaryStage.show();
-                /*https://blog.idrsolutions.com/2012/11/adding-a-window-resize-listener-to-javafx-scene/*/
+                //https://blog.idrsolutions.com/2012/11/adding-a-window-resize-listener-to-javafx-scene/
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 double change = space.getWidth() + doubleValue(newSceneWidth) - doubleValue(oldSceneWidth);
@@ -137,7 +145,6 @@ public class Main extends Application {
                 double spaceChange = space.getHeight() + doubleValue(newSceneHeight) - doubleValue(oldSceneHeight);
                 double startBtnChange = 518 + doubleValue(newSceneHeight) - doubleValue(oldSceneHeight);
                 space.prefHeightProperty().setValue(spaceChange);
-                //startButton.setLayoutY(startBtnChange);
             }
         });
 

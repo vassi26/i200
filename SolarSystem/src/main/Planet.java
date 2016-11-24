@@ -78,22 +78,25 @@ public class Planet {
 
     double alpha = 0;
     int direction = 1;
+    Double speedRate = 1.0;
 
     Coordinates coordinates = new Coordinates(0,0,0);
 
     Node sphere = createView();
     public Node createView() {
+        PhongMaterial material = new PhongMaterial();
+        //material.setDiffuseColor(Color.web(color));
+        material.setSpecularColor(Color.BLACK);
+
 
         Sphere sphere = new Sphere(radius);
-        PhongMaterial m = new PhongMaterial();
-        m.setDiffuseColor(Color.ALICEBLUE);
-        sphere.setMaterial(m);
+        sphere.setMaterial(material);
         return sphere;
     }
 
     public void updateLocation() {
 
-        alpha += omega * direction;
+        alpha += omega * direction * speedRate;
         coordinates.setX(orbit * sin(toRadians(alpha)));
         coordinates.setY(orbit * cos(toRadians(alpha)));
 
