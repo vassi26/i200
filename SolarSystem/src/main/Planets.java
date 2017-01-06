@@ -29,4 +29,12 @@ public class Planets {
 
     }
 
+    public Planet getPlanetByName(String name) {
+        for (int i = 0; i < this.planets.size(); i++){
+            Planet planet = this.planets.get(i);
+            if(planet.name == name) {
+                return planet;}
+        }
+        return null;
+    }
 }

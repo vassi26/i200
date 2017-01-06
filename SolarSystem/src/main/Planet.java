@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
+import javafx.scene.text.Text;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,7 +16,7 @@ import static java.lang.Math.*;
 @XmlRootElement( name = "planet" )
 public class Planet {
 
-    Node view = createView();
+    Node title;
 
     String name;
     public String getName()
@@ -82,16 +83,32 @@ public class Planet {
 
     Coordinates coordinates = new Coordinates(0,0,0);
 
-    Node sphere = createView();
     public Node createView() {
+
         PhongMaterial material = new PhongMaterial();
         //material.setDiffuseColor(Color.web(color));
         material.setSpecularColor(Color.BLACK);
-
-
         Sphere sphere = new Sphere(radius);
         sphere.setMaterial(material);
+        sphere.setId(name);
         return sphere;
+
+    }
+
+    public Node createTitle() {
+
+        Text title = new Text();
+        title.setText(name);
+        title.setFill(Color.RED);
+        this.title = title;
+        return title;
+
+    }
+
+    public void toggleTitle(){
+
+        this.title.setVisible(!this.title.isVisible());
+
     }
 
     public void updateLocation() {

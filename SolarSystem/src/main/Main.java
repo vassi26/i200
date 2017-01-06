@@ -69,6 +69,7 @@ public class Main extends Application {
         loadPlanets();
 
         space.getChildren().addAll(planets.getPlanets().stream().map(Planet::createView).collect(Collectors.toList()));
+        space.getChildren().addAll(planets.getPlanets().stream().map(Planet::createTitle).collect(Collectors.toList()));
         space.setStyle("-fx-background-image: url(/resources/space.jpg);");
         space.setBorder(new Border(new BorderStroke(Color.PURPLE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
@@ -81,20 +82,43 @@ public class Main extends Application {
         time.setCycleCount(Animation.INDEFINITE);
         KeyFrame motion = new KeyFrame(duration,
                 event -> {
-                    for(int i = space.getChildren().size(); i > 0 ;i--){
-                        Node planet = space.getChildren().get(i-1);
-                        TranslateTransition t = new TranslateTransition(duration, planet);
-                        t.setToX(planets.getPlanets().get(i-1).coordinates.getX());
-                        t.setToY(planets.getPlanets().get(i-1).coordinates.getY());
+                    int j = space.getChildren().size();
+                    for(int i = j/2 - 1; i > 0 ;i--){
+                        Node planet = space.getChildren().get(i);
+                        Node title = space.getChildren().get(j-1);
+                        j--;
+                        TranslateTransition tPlanet = new TranslateTransition(duration, planet);
+                        TranslateTransition tTitle = new TranslateTransition(duration, title);
+                        tPlanet.setToX(planets.getPlanets().get(i).coordinates.getX());
+                        tPlanet.setToY(planets.getPlanets().get(i).coordinates.getY());
+                        tTitle.setToX(planets.getPlanets().get(i).coordinates.getX()+25);
+                        tTitle.setToY(planets.getPlanets().get(i).coordinates.getY()+25);
                         //helps make transitions smooth
-                        t.setInterpolator(Interpolator.LINEAR);
-                        transactions.add(t);
-                        planets.getPlanets().get(i-1).updateLocation();
+                        tPlanet.setInterpolator(Interpolator.LINEAR);
+                        tTitle.setInterpolator(Interpolator.LINEAR);
+                        transactions.add(tPlanet);
+                        transactions.add(tTitle);
+                        planets.getPlanets().get(i).updateLocation();
+                        //planet.addEventHandler(MouseEvent.MOUSE_CLICKED,e -> {planets.getPlanets().get(3).toggleTitle();});
+                        //planet.addEventHandler(MouseEvent.MOUSE_EXITED,e -> {startButton.setText("pong");});
                     }
                     transactions.forEach(Animation::play);
                 });
 
         time.getKeyFrames().add(motion);
+
+        /* ORIGINAL:
+        *   for(Node object : space.getChildren() ){
+            if(object.getId() != null) {
+                object.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    planets.getPlanetByName(object.getId()).toggleTitle();});
+            }
+        }*/
+        space.getChildren().stream().filter(object -> object.getId() != null).forEach(object -> {
+            object.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                planets.getPlanetByName(object.getId()).toggleTitle();
+            });
+        });
 
         startButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 e -> {
