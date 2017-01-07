@@ -79,14 +79,14 @@ public class Planet {
 
     double alpha = 0;
     int direction = 1;
-    Double speedRate = 1.0;
+    Double speedRate = 0.1;
 
-    Coordinates coordinates = new Coordinates(0,0,0);
+    Coordinates coordinates = new Coordinates(0,0);
 
     public Node createView() {
 
         PhongMaterial material = new PhongMaterial();
-        //material.setDiffuseColor(Color.web(color));
+        material.setDiffuseColor(Color.web(color));
         material.setSpecularColor(Color.BLACK);
         Sphere sphere = new Sphere(radius);
         sphere.setMaterial(material);
@@ -100,6 +100,7 @@ public class Planet {
         Text title = new Text();
         title.setText(name);
         title.setFill(Color.RED);
+        title.setVisible(false);
         this.title = title;
         return title;
 

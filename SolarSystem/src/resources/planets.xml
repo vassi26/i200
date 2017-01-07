@@ -1,38 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <planets>
   <planet>
-    <name>The Sun</name>
-    <radius>30</radius>
+    <name>Sun</name>
+    <radius>8</radius>
     <orbit>0</orbit>
     <omega>0</omega>
-    <color>0000FF</color>
+    <color>ffe066</color>
   </planet>
   <planet>
     <name>Mercury</name>
-    <radius>2</radius>
-    <orbit>50</orbit>
-    <omega>5</omega>
-    <color>0000FF</color>
+    <radius>1</radius>
+    <orbit>25</orbit>
+    <omega>29</omega>
+    <color>b36b00</color>
   </planet>
   <planet>
     <name>Venus</name>
-    <radius>8</radius>
-    <orbit>75</orbit>
-    <omega>4</omega>
-    <color>0000FF</color>
+    <radius>2.41</radius>
+    <orbit>35</orbit>
+    <omega>21</omega>
+    <color>d9b38c</color>
   </planet>
   <planet>
     <name>Earth</name>
-    <radius>10</radius>
-    <orbit>100</orbit>
-    <omega>3</omega>
-    <color>0000FF</color>
+    <radius>2.54</radius>
+    <orbit>45</orbit>
+    <omega>18</omega>
+    <color>66d9ff</color>
   </planet>
   <planet>
     <name>Mars</name>
-    <radius>5</radius>
-    <orbit>125</orbit>
+    <radius>1.34</radius>
+    <orbit>55</orbit>
+    <omega>15</omega>
+    <color>992600</color>
+  </planet>
+  <planet>
+    <name>Jupiter</name>
+    <radius>28.4</radius>
+    <orbit>120</orbit>
+    <omega>8</omega>
+    <color>e68a00</color>
+  </planet>
+  <planet>
+    <name>Saturn</name>
+    <radius>24</radius>
+    <orbit>175</orbit>
+    <omega>6</omega>
+    <color>b38f00</color>
+  </planet>
+  <planet>
+    <name>Uranus</name>
+    <radius>10.2</radius>
+    <orbit>220</orbit>
+    <omega>4</omega>
+    <color>99ffe6</color>
+  </planet>
+  <planet>
+    <name>Neptune</name>
+    <radius>9.88</radius>
+    <orbit>250</orbit>
     <omega>2</omega>
-    <color>0000FF</color>
+    <color>33adff</color>
   </planet>
 </planets>

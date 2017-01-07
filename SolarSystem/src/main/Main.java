@@ -64,6 +64,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Solar System");
+        primaryStage.setResizable(false);
         primaryStage.getIcons().add( new Image( Main.class.getResourceAsStream( "../resources/icon.png" )));
 
         loadPlanets();
@@ -73,17 +74,23 @@ public class Main extends Application {
         space.setStyle("-fx-background-image: url(/resources/space.jpg);");
         space.setBorder(new Border(new BorderStroke(Color.PURPLE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        /*http://stackoverflow.com/questions/24347658/getting-a-mp3-file-to-play-using-javafx | http://soundimage.org/sci-fi/*/
-        String path = Main.class.getResource("/resources/Light-Years.mp3").toString();
+        //https://www.youtube.com/watch?v=wWjgsepyE8I — Last Dawn ( Copyright and Royalty Free )
+        String path = Main.class.getResource("/resources/Last-Dawn.mp3").toString();
         Media media = new Media(path);
         MediaPlayer mp = new MediaPlayer(media);
+        //http://stackoverflow.com/questions/23498376/ahow-to-make-a-mp3-repeat-in-javafx
+        mp.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                mp.seek(Duration.ZERO);
+            }
+        });
 
         Timeline time = new Timeline();
         time.setCycleCount(Animation.INDEFINITE);
         KeyFrame motion = new KeyFrame(duration,
                 event -> {
                     int j = space.getChildren().size();
-                    for(int i = j/2 - 1; i > 0 ;i--){
+                    for(int i = j/2 - 1; i > -1 ;i--){
                         Node planet = space.getChildren().get(i);
                         Node title = space.getChildren().get(j-1);
                         j--;
@@ -99,8 +106,6 @@ public class Main extends Application {
                         transactions.add(tPlanet);
                         transactions.add(tTitle);
                         planets.getPlanets().get(i).updateLocation();
-                        //planet.addEventHandler(MouseEvent.MOUSE_CLICKED,e -> {planets.getPlanets().get(3).toggleTitle();});
-                        //planet.addEventHandler(MouseEvent.MOUSE_EXITED,e -> {startButton.setText("pong");});
                     }
                     transactions.forEach(Animation::play);
                 });
@@ -143,6 +148,7 @@ public class Main extends Application {
                     } else {
                         for(Planet p : planets.getPlanets()){
                             p.direction = 1;
+
                         }
                         directionButton.setText("Reverse");
                     }
@@ -151,13 +157,16 @@ public class Main extends Application {
         slider.valueProperty().addListener((arg0, arg1, arg2) -> {
 
             rate = slider.getValue();
-            speed.textProperty().setValue(String.valueOf(Math.round( rate * 100.0 ) / 100.0));
             for(Planet p : planets.getPlanets()){p.speedRate = rate;}
+            Double musicRate = 1.3 * Math.pow(rate, 2) - 0.4 * rate + 0.5;
+            mp.setRate(musicRate);
+            speed.textProperty().setValue(String.valueOf("1 min : " + Math.round( rate * 3650.0 )) + " days");
 
         });
 
         primaryStage.show();
-                //https://blog.idrsolutions.com/2012/11/adding-a-window-resize-listener-to-javafx-scene/
+
+        //https://blog.idrsolutions.com/2012/11/adding-a-window-resize-listener-to-javafx-scene/
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 double change = space.getWidth() + doubleValue(newSceneWidth) - doubleValue(oldSceneWidth);
@@ -167,14 +176,13 @@ public class Main extends Application {
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
                 double spaceChange = space.getHeight() + doubleValue(newSceneHeight) - doubleValue(oldSceneHeight);
-                double startBtnChange = 518 + doubleValue(newSceneHeight) - doubleValue(oldSceneHeight);
                 space.prefHeightProperty().setValue(spaceChange);
             }
         });
 
     }
 
-
+    //loading planets from XML file
     public void loadPlanets() {
 
         // JAXB unmarshalling is made basing on this example
